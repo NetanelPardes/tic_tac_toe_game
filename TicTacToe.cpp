@@ -1,8 +1,11 @@
 #include "TicTacToe.h"
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 
 TicTacToe::TicTacToe(int n, int m)
     : board(n), winLength(m), player1Symbol("X"), player2Symbol("O") {
+    std::srand(std::time(0));
 }
 
 void TicTacToe::playGame()
@@ -14,15 +17,12 @@ void TicTacToe::playGame()
     while (true)
     {
         board.printBoard();
-        std::cout << "Player " << currentPlayer << ", enter your move: ";
+        std::cout << "Player " << currentPlayer << ", making a move...\n";
         int move;
-        std::cin >> move;
 
-        if (!board.makeMove(move, currentPlayer))
-        {
-            std::cout << "Invalid move! Try again.\n";
-            continue;
-        }
+        do {
+            move = std::rand() % (board.getSize() * board.getSize()) + 1;
+        } while (!board.makeMove(move, currentPlayer));
 
         ++totalMoves;
 
@@ -48,12 +48,10 @@ bool TicTacToe::checkWin(const std::string& symbol) const
 {
     int size = board.getSize();
 
-    // Check rows, columns, diagonals
     for (int i = 0; i < size; ++i)
     {
         for (int j = 0; j < size; ++j)
         {
-            // Horizontal
             if (j <= size - winLength)
             {
                 bool win = true;
@@ -63,7 +61,7 @@ bool TicTacToe::checkWin(const std::string& symbol) const
                 }
                 if (win) return true;
             }
-            // Vertical
+
             if (i <= size - winLength)
             {
                 bool win = true;
@@ -73,7 +71,7 @@ bool TicTacToe::checkWin(const std::string& symbol) const
                 }
                 if (win) return true;
             }
-            // Diagonal (top-left to bottom-right)
+
             if (i <= size - winLength && j <= size - winLength)
             {
                 bool win = true;
@@ -83,7 +81,7 @@ bool TicTacToe::checkWin(const std::string& symbol) const
                 }
                 if (win) return true;
             }
-            // Diagonal (bottom-left to top-right)
+
             if (i >= winLength - 1 && j <= size - winLength)
             {
                 bool win = true;
